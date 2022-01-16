@@ -8,14 +8,23 @@ fi
 if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
   source /usr/share/zsh/manjaro-zsh-prompt
 fi
-
 #set background at sys start
 feh --bg-scale /home/manjaro/Downloads/MQcz86.png
 
 
 #functions
 brightness() {
-  echo $1 | sudo tee /sys/class/backlight/amdgpu_bl0/brightness
+  input=$1;
+  max_brigth=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+  echo "(${input}/100)*${max_bright}" | bc -l | awk -F. '{print $1}' | sudo tee /sys/class/backlight/intel_backlight/brightness
+}
+
+langes(){
+  setxkbmap -layout es
+}
+
+langus(){
+  setxkbmap -layout us
 }
 
 volume(){
@@ -50,6 +59,10 @@ bluetoothsr(){
 newCFile(){
   local header="/**\n* Programa: $1\n* Autor: $2\n* Fecha: $(date +'%Y-%m-%d')\n*/"
   echo $header > "./$1.c"
+}
+
+listContainers(){
+  sudo docker ps -a | awk -F " " '{print $NF}' | grep -v "NAMES"
 }
 
 #my aliases
